@@ -1,0 +1,368 @@
+
+15th December 2024
+
+SIEM centralized tool which collects real time logs from network and security devices, servers, applications,databases..etc
+
+once it collects the logs, it passes(rows & Columns wise) the logs, normalize the logs and keep the logs for longtime ( based on organizational requirement, forensic requirement and  audit &compliance requirement)and enable the searching and reporting feature 
+
+SIEM also has the feature of Realtime monitoring, co -relation and alerting.
+
+unreadable format to readable format.
+
+All the logs can be monitor in a single window- no need to login to each device for logs
+
+Parsing: breaking the events into rows and columns
+
+Normalisatin  : mapping of device specific field set with the siem define common field sets
+
+EPS: Event per second -- 10k to 15k per second
+
+Hence, filters, conditions
+
+malicious : brueforce software - attacker 
+
+Windows login failure - condition apply  { multiple events at atime - its a serious issue)
+
+define the SIEM-  if login failures  { condition= windows login failure ) , no of events more than 100 with time 2 minutes
+
+If it matches - generates an alert
+
+************************************************************************************************************************
+Gartner publish
+
+1: splunk is a leader one for 10 years
+2: Microsoft Sentnent
+3: IBM Qradar
+
+Splunk (2002)----- 2024 March - splunk acquired by cisoc- and name  cisco Splunk ( largest software company across the world)
+
+Splunk  - It was data analytics tool ( reporting)- splunk enterprise security (core achitecture) add on over the alerting
+          SIEm has integrated in the splunk
+
+************************************************************************************************************************
+21 dec 2024
+
+RAW logs- when attack done and extract data its difficult to understand - take time and attacker may enter.you cannot take the action.
+
+We need to have SIEM tool to identify and work accordingly. SIEM will just collect the realtime logs from network.
+
+SIEM collects and  parse the data and stores and Normalisaton happens only during the search
+
+In splunk all logs can be watchable , raw ,parshe and normalise
+
+splunk will show src and src_ip address also
+
+SOAR - automatition
+
+SPLUNK deployment-- virutal and physcal ( on premises- splunk enterprises- manage by IT )
+
+SIEM- integrate domain controller  ( account deleted) - only security related, applications not system related( file opening) but audit logs will be forwarded. 
+
+Splunk cluster Master-- Architecture
+
+Splunk data Architectre
+
+deloyer and deployment servers
+
+splunk licensing  10 GB- 23 lakhs ( goes as per licensing) and license master
+
+svc- splunk virtual computer- 
+
+Splunk enterprises:
+
+1: forwarder(software):its a component of splunk enterprise architecture  which collects the logs from end devices such as network ,security devices..etc
+ once collects the logs ,it parses the logs ,filter out the logs to the indexer
+( Firewall, router, switches and servers )
+
+2: indexing(software) : all the logs which are collected in the forwarder has stored in the indexer and search head will search the logs in the indexer and gives the result.
+
+3: Search Head (Software): search
+
+In the SPlunk enterprise environment: its mandatory to have forwarder
+
+what is forwarder is doing:  receiving - receiving - sendsearch queries to Indexer
+                             parsing ---parsing
+                             filtering--licensing------enable searching, reporting,visualization,alerting.etc
+                             forwarding- compression, indexing and writing the data on disk
+ In splunk, obilization will not happen while collecting the logs)- you have to take addon separately for searching - its not default and its was used for data analytics
+
+
+WHY TO PARSE THE LOGS TWO TIMES:  no 1: when it collects from forwarder it parse the logs
+                                  no 2: when its filters the accurate one - then it parse the logs for second time
+
+filtering: we can remove hte unwanted system logs- which are not necessary  ( waste of licenses and storage issue)
+
+forwarder will not required any license only indexer will required the licenses. you can drop the unwanted logs in the forwarder level itself to save the license and storage
+
+
+Indexing-licensing: its how many gb for day we need to procure the licenses- 10 GB ,20 GB..etc
+            by default :500mb 
+
+splunk has GB per model - SIEM has EPs model ( event persecond)- GBPer day
+
+Indexer- receive the logs from forwarder as well as directly from the  network devices ( to reduce the one level of load- we have forwarder)
+
+if the indexer receive the logs from forwarder- then it wont required to do any parsing. when it directly interact with network devices it has to do the parsing
+
+Very imp: indexer after parsing- it will  go to licensing part (once the license verified) IT WILL ENABLE THE OPTIONS FOR SEARCHING , REPORTING, VISUALIZATION ALERTING.ETC
+
+compressing: all the data which has stored in the index will get compress(to reduce time and storage)-while searching its decompress the data
+
+
+Splunk -once all the parsing has done and compressed - it will go to the indexing ( where two files will be there )
+
+Indexing:
+
+1: tsidx(index file)  - time save and fast searching
+
+2: RAW data-contains parse and raw
+
+
+how long it will be storage - its totally depend on the retention period of the company norms/regulations.
+
+By default - SPLUNK will store the data for 6 years 
+
+
+Example: if the index file has 100GB ( 66% index  and 33% RAW).you can reduce the index file (optimize) which log is frequently sequencing then you can go for 90 days( txdata will get deleted) - 
+
+Splunk do not use any database to store the data9 ( txsi and raw data)
+
+
+Setup files availble to download
+
+Splunk Enterprise and another is Universal forwarder
+
+IN Splunk - there are only two forwarders - one is Heavy forwarder an another one is universal forwarder
+
+
+1) device integraton/data source on boarding/logs sourceintegration: all the network devices has to configure with the forwarder - no of devices integrated to forward to receive the logs
+
+definition: it is the process of doing the required configuration on the SIEM and data source end inorder to receive the logs from the siem
+
+IN SIEM documentation: we will find how to configuration the network devices and forwarders to communicate -
+
+for windows- SIEM will login windows logs remotely thorugh wmi
+
+Microsoft - WMI ( windows management instrumentation)(pull) - siem has to go windows and pull the logs
+
+Linux/ios/- syslog (push method)
+
+SPLUNK has created one more integration: 
+
+Any remote to collect logs - windows logs will collect - eventviewr( application, security and system,audit)
+
+
+Heavy forwarder: Which is installed in one dedicated high end server 
+
+Splunk has created own menthod for windows - agent method ( install agent in the universal forwarders)- its lightweight (80mb)
+
+its collects the logs locally and send to the heavy forwarder or directly to indexer also-- Anyone
+
+you can monitor the folder and file level also ( who has accessed and deleted)- using universal forwarder
+
+Data Center : all the indexing and search head- you can have multiple indexer and searchhead based on your requriement
+
+Heavy forwarders: all the different places (local data center)
+
+******************************************************************************************************************************************
+22 Dec 24
+
+more and more indexer and load on the system- Based on how many concurrent login, - multiple search headers
+
+Indexer Cluster: multiple index to do the load balance 
+
+Search head cluster : multiple searched  to do the load balance
+
+
+heavy forwarder1 :logs collects from network devices: stores locally
+
+
+heavy forwarder2 : logs collects from network devices: stores locally
+
+indexer master1 : stores the logs from both HF1 and HF2
+
+indexer master 2: stores the log from both HF1 and HF2 
+
+the both index master will be in sychroize mode- always sync data
+
+Cluster Master: which is connected to the indexers( management node) - manage the replication
+
+Heavy forwarders : suppose has 6 events and it will distribute to all indexer in a round robin method
+
+once the HF1 send data to index -1, 2,3 and Hf2 data to index 4, 5,6 - then in that case when search searches the data wil not be availble .
+
+
+The first log1 (1,2,3) from forwarder to index1 will go the index pipe line there indexing, compressing, licensing will happen and then it will contact to the cluster master- 
+The cluster master will work mutually to everyone- these indexer's do not know each other. when any index configured it will be known to the cluster master
+
+Cluster master will have the entire information of the indexers.then it wil share the howmany indexers are availble in the network( ip address) to the index1 - then index1 will transfer the final log to the indexers 
+
+Note: when its already done the indexing, compression and licensing- no need to verify all the things again ( its already readymade done by index1)
+
+Splunk enterprises
+
+1: forwarders on mostly on windows platform and indexing and searchheads( cluster) on Linux platform
+
+splunk licensing
+
+1:free trail,
+2: free license
+3: splunk enterprise license
+4: splunk forwarder license
+5: splunk sales trail license
+
+60 days period - trail
+
+Asset list - inventory of serial no, hostname ..etc to update in the forwarders
+*************************************************************************************************
+28-12-24
+
+
+splunk installation
+
+c: program/splunk-- in splunk directory - in Linux
+clsplunk
+/opt/splunk
+/splunk/home
+
+Directory/folder Structure
+
+Splunk directory structure
+
+                 forwarder indexer searchhead
+
+parsing
+licensing
+indexer-
+
+splunk has created separate storage to create his own internal logs-so that search will happen faster- called as index
+
+internal logs also created based on the category.
+
+who has done the changes, long back records, why report failed ,-- generate in form of logs
+
+Audit logs - where the changes has occurred/happened. 
+
+15 indexers- out of 14 indexers are own internal logs and only one index is for the logs from the forwarders(end devices)but provided custom option to create( n number of index)
+
+database time give - database logs access in the same manner for firewall and windows ,network index. its team account and like role base
+
+why indexes are created: fast searches and can provide the role base access ( network team, firewall and database)
+
+Based on the devices availability - we have create the indexes
+
+Main index- bucket 
+
+there are 5 different buckets- just to make search faster
+
+1: hot --- size 750mb- open state ( from main index to hot bucket)- which is frequently search- maintain the retention then it moves to warm bucket
+2: warm- size 750 mb-
+3: cold---
+4: frozen- optional ( after retention period)
+5: thawd- 
+
+splunk directry structure - splunk- bin(exectuables)  etc(configuration)       var(lib-splunk)-splunk database
+                                                       apps-system- default & local
+
+to do any configuration changes- we can do with below process- highly customize
+
+1)using splunk web browser
+2)using command line interface
+
+/etc- configuration files will stores ( changes can be done)
+
+note: always prefer to install splunk in older version ( if any errors - we can work accordingly)
+
+it will ask to where to store the path- you can select if in app/system/..etc
+
+Splunk admin book- refer
+
+cluster- we need to do the uniform changes
+
+create and configure -  index cluster
+                   serch cluster
+
+************************************************************************
+29-12-24
+
+splunk download and how its works-- in a standalone environment
+
+It is more like practical, he has how to download splunk and then what all it has and what it contains
+
+how to  confugre the searched, indexer, forwarder
+
+*************************************************************************
+
+04--1-25
+
+
+splunk- how to collect the logs from all devices
+ 
+if heavy faorwarderget down- you can login with tcp and udp protocols
+
+The router/firewall will auto collect logs in the local devices as teh forwarder is down - but it will send packets to get acknowledgment - Hence recommend TCP protocol
+
+during integration the router with heavy forwarder - we need to configure tcp or  udp-- both should be same 
+
+udp-514 default port -syslog's ( because - generate billions of logs- if tcp- network bandwith and acknowledge and another packet and hence slow)
+so  prefer to go with udp
+
+
+monitoring console- every splunk enterprise has monitoring console - where all the healthstatus can be view- but differently configured
+
+
+routers- log balanceer- hf1 and hf2 - then to indexer
+
+log balncer forwrd to hf1 and then send to indexer - in the cluster you don't required the load balnacer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
